@@ -1,58 +1,50 @@
 import requests
-import sys
-import json
 
 class RhodesAPIClient:
 
     def __init__(self) -> None:
-        self.__query_params = {}
-        self.__base_url = "https://rhodesapi.up.railway.app/api/search"
+
+        # Recruit Endpoint
+        self.__base_url = "https://rhodesapi.up.railway.app/api/recruit"
     
-    def get_operator(self):
-        response = requests.get("https://rhodesapi.up.railway.app/api/operator/mudrock")
+    def get_recruitments(self, tag1="", tag2="", tag3=""):
+
+        # Declare Dictionary for return
+        operators = dict()
+
+        # Parameter required for endpoints
+        params = {
+            "tag1": tag1,
+            "tag2": tag2,
+            "tag3": tag3,
+        }
         
-        self.jprint(response.json())
+        try:
+            # Make the API request
+            response = requests.get(self.__base_url, params=params)
+            
+            # Check the HTTP status code for errors
+            if response.status_code == 200:
+                data = response.json()
 
-    def get_recruitments(self):
-        url = self.__base_url + "?" + "&".join(f"{key}={value}" for key, value in self.query_params.items())
-        
-        response = requests.get(url)
+                # Iterate through operators
+                for operator in data:
 
-        json_str = json.dumps(response.json(), sort_keys=True, indent=4)
-        data = json.loads(json_str)
+                    # Get operator attributes
+                    name = operator["name"]
+                    rarity = operator["rarity"]
+                    tags = operator["tags"]
 
-        for operator in data:
-            print(operator["name"])
+                    operator_data = {"rarity": rarity, "tags": tags}
+                    operators[name] = operators.get(name, operator_data)
 
-    def jprint(self, obj):
-        # Create formatted string of python JSON object
-        text = json.dumps(obj, sort_keys=True, indent=4)
-        print(text)
+            else:
+                # Handle the API request error here
+                print(f"API request failed with status code {response.status_code}")
 
-    def add_query_params(self, param, value):
-        if not param or not value:
-            raise ValueError("Parameter and value must not be empty.")
+        except Exception as e:
+            # Handle any other exceptions that might occur
+            print(f"An error occurred: {str(e)}")
 
-        if param in self.query_params:
-            raise ValueError(f"Parameter '{param}' already exists.")
-
-        self.set_query_param(param, value)
-
-    def modify_query_param(self, param, value):
-        if not param or not value:
-            raise ValueError("Parameter and value must not be empty.")
-
-        if param not in self.query_params:
-            raise ValueError(f"Parameter '{param}' does not exist.")
-
-        self.set_query_param(param, value)
-
-    @property
-    def query_params(self):
-        return self.__query_params
-
-    def set_query_param(self, param, value):
-        if not param or not value:
-            raise ValueError("Parameter and value must not be empty.")
-
-        self.__query_params[param] = value
+        # Returns Operators
+        return operators
