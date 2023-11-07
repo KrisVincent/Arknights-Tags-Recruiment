@@ -18,6 +18,7 @@ Python
 OpenCV for image processing
 Tesseract OCR for text extraction
 [RhodesAPI](https://github.com/wesngu28/rhodesapi) for data retrieval
+Possibly More as the project progresses
 
 
 👩‍💻 Contributing:
