@@ -24,6 +24,15 @@ class ImageProcessor:
     def set_contours(self, contours):
         self.__contours = contours
 
+    # Set Captured Images
+    def set_images(self, images):
+        self.__images = images
+
+    # Get Captured Images
+    @property
+    def images(self):
+        return self.__images
+
     # Get screenshot
     @property
     def screenshot(self):
@@ -33,7 +42,6 @@ class ImageProcessor:
     @property
     def contours(self):
         return self.__contours
-
 
     def process_screenshot(self):
         """
@@ -74,6 +82,7 @@ class ImageProcessor:
 
         # Pass to contour property
         self.set_contours(captured_contours)
+ 
 
         # Draw contours
         self.draw_contours(img)
@@ -81,15 +90,20 @@ class ImageProcessor:
     # Draw Contours
     def draw_contours(self, image):
 
+        copy = image.copy()
+        cropped_images = []
+        
         for contour in self.contours:
-
+            # Get Draw
             x, y, w, h = cv2.boundingRect(contour)
+            roi = copy[y:y + h, x:x + w]
 
-            # Draw Contours
-            result = cv2.rectangle(image, (x, y), (x + w, y + h), (255,0,0), 5)
+            # Append the cropped ROI to the list
+            cropped_images.append(roi)
 
-        self._display_image(result)
-
+        self.set_images(cropped_images)
+        
+         
     # Debugging purposes
     def _display_image(self, image, windows_title = "Debug", scale_percent = 50):
 
