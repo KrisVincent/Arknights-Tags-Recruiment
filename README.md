@@ -17,6 +17,8 @@ Get a list of possible operators you can recruit based on your tags.
 Python
 OpenCV for image processing
 Tesseract OCR for text extraction
+Flask for API building
+???? for Frontend
 [RhodesAPI](https://github.com/wesngu28/rhodesapi) for data retrieval
 Possibly More as the project progresses
 
